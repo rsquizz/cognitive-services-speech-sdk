@@ -372,6 +372,8 @@
                     if (e.reason === SpeechSDK.CancellationReason.Error) {
                         //statusDiv.innerHTML += ": " + e.errorDetails;
                     }
+                    console.log("line 376 reporting. i = ", i);
+                    doNext(i, files);
                     //statusDiv.innerHTML += "\r\n";
                 };
 
@@ -408,8 +410,6 @@
                         reco.close();
                         reco = undefined;
                     });
-                    console.log("line 412 reporting. i = ", i);
-                    doNext(i, files);
                     //createCSV(allRows,outputDir);
                     //curFileRows = [];
                 };
