@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>UW CLOx</title>
+        <meta charset="utf-8" />
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"> 
+        <link rel="stylesheet" type="text/css" href="public/reset.css" />
+        <link rel="stylesheet" type="text/css" href="public/style.css" />
+        <meta name="viewport" content="width=device-width,initial-scale=1">        
+    </head>
+<body>
+    <div id="header" class="flex">
+        <div class="fake"></div>
+        <img id="logo" src="public/images/clox_logo.jpg">
+        <img id="logo_mobile" src="public/images/clox_logo_mobile.jpg">       
+        <div class="navbar">
+            <a href="http://depts.washington.edu/sociolab/" target="_blank"><img id="uw_logo" src="public/images/W-Logo_White.png"></a>
+            <a id="nav_li" href="http://depts.washington.edu/sociolab/" target="_blank">UW Sociolinguistics</a>
+        </div>
+    </div>
+    <div id="content" style="display: -webkit-box;  display: -moz-box;  display: -ms-flexbox;  display: flex; flex-direction: column; justify-content: center; clear: both;">
+        <div id="subheader" class="flex">
+                <p><a href=index.html>Home </a>|<a href="CLOx_Guide.pdf"> Guide </a>|<a href="scripts.html"> Scripts &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
+        </div>    
+        <div id="center_wrap" class="flex">
+            <div style="margin-left: 5em; text-align: left; margin-right: 5em;">
+                <h2 style="text-align: center;">Helper scripts for audio preprocessing</h2>
+            </div>
+        <!--New text here - something like: 
+        Two scripts are available for audio preprocessing; one in Praat, and one in Python
+        The advantages of the Praat script are that Python does not need to be installed and you do not need to know how to use a command-line interface.
+        The advantage of the Python script is that it uses silence detection to break up files, meaning that the extracted files do not end during the middle of a speech event. 
+        This may result in a higher quality transcription, as Bing Speech will not be analyzing truncated utterances.
+        The Python script also has a faster runtime for larger audio files.-->
+        <div class="flex option_row" style="height: 1px;"></div>
+        <div style="text-align: center; width: 90%; color: gray; margin-left: 5%;">
+            Note: clicking a link should prompt you to download the file. On some browsers, scripts may open as text files. If so, right-click or command-click the link 
+            and click "Save Link As...” to the file indicated in the manual, where applicable.
+        </div>
+        <div id="software_links" style="min-height: 160px; text-align: center; width: 60%; margin: 0 auto;">
+            <div class="software" id="apple">
+                <div><img style="height: 131px;" src="public/images/apple.png" /></div>
+                <div>
+                    <a href="auto_extraction.praat" download="auto_extraction.praat">Praat script </a>
+                    <br><br>
+                    <a href="#">Python Script</a><br>
+                    <div class="python_explanation">What's this?</div><br>
+                <a href="#">.zip file</a><br>
+            <a href="#">Manual</a><br></div>
+            </div>
+            <div class="software" id="microsoft">
+                    <div><img src="public/images/microsoft.png" /></div>
+                    <div><a href="auto_extraction.praat" download="auto_extraction.praat">Praat script </a>
+                        <br><br>
+                        <a href="#">Python Script</a><br>
+                    <div class="python_explanation">What's this?</div><br>
+                <a href="Python/CLOx-preprocessing.zip">.zip file</a><br>
+                <a href="Python/Win_manual.pdf">Manual</a><br></div>
+            </div>
+            <div class="software" id="linux">
+                    <div><img src="public/images/linux.png" /></div>
+                    <div><a href="auto_extraction.praat" download="auto_extraction.praat">Praat script </a>
+                        <br><br><a href="#">Python Script</a><br>
+                        <div class="python_explanation">What's this?</div><br>
+                .zip file<br>
+                <a href="#">Manual</a><br></div>
+            </div>
+            <div class="flex option_row" style="height: 1px;"></div>
+        </div>
+        <div id="python_modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span id="close_python_modal" class="close">&times;</span>        
+                    For those comfortable with command-line operations, a Python script is available as an 
+                    alternative to the Praat script. Like the Praat script, the Python script converts sound 
+                    files to mono and accomplishes downsampling. The principal difference is the manner in 
+                    which it breaks up the sound files – rather than ending after a hard-coded interval of 
+                    time, the Python script uses silence detection to break up files, meaning that the 
+                    extracted files do not end during the middle of a speech event. The main advantage is 
+                    a possibly higher quality transcription, as Bing Speech will not be analyzing truncated 
+                    utterances.
+                    In order to run the scripts, the following system requirements must be met. First, 
+                    Python 3.5.4 must be installed; to do so will require administrator privileges on your 
+                    system. (Other versions of Python are not supported, but may work.) Windows 10, 8, 8.1, 
+                    and 7 have been tested.  Once testing is complete, we hope to have a version for the latest 
+                    versions of OS X.        
+                    The script and all associated files are available in the .zip file. Download the .zip file 
+                    appropriate to your operating system, then follow the instructions provided in the 
+                    INSTALL.txt file. To use the script, it is necessary to install the Python interpreter. 
+                    The installation script generates a README.txt file with brief instructions for using the 
+                    script. A more detailed how-to guide can be found in the appendix of the CLOX_guide.
+            </div>
+        </div>
+    </div>    
+        <div id="footer">
+                Developed and maintained by the&nbsp<a href=http://depts.washington.edu/sociolab target="_blank">University of Washington Sociolinguistics Laboratory.</a>
+                <br>Powered by Microsoft Cognitive Services.
+            &copy;2018.
+        </div>
+    </div>
+    <script>
+        const python_explanation = document.getElementsByClassName("python_explanation");
+        const python_modal = document.getElementById("python_modal");
+        const close_python_modal = document.getElementById("close_python_modal");
+        
+        function setEventListeners() {
+            for (i = 0; i < python_explanation.length; i++) {
+            python_explanation[i].addEventListener("click", function() {
+            python_modal.style.display = "block";
+                })            
+            }
+        }
+
+        close_python_modal.onclick = function() {
+            python_modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+           if (event.target == python_modal) {
+                python_modal.style.display = "none";
+            }
+        }
+
+        setEventListeners();
+    </script>
+</body>
+</html>
