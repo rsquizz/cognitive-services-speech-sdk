@@ -75,6 +75,7 @@
     // status fields and start button in UI
     var phraseDiv;
     var sdkStopContinousRecognitionBtn;
+    //I believe "RecognizeOnceAsync" is actually functioning as a continuous recognition process
     var startRecognizeOnceAsyncButton;
     // subscription key and region for speech services.
     var subscriptionKey, serviceRegion;
@@ -98,14 +99,7 @@
       startRecognizeOnceAsyncButton.addEventListener("click", function () {
         startRecognizeOnceAsyncButton.disabled = true;
         phraseDiv.innerHTML = "";
-      //});
-      
-      //sdkStartContinousRecognitionBtn.addEventListener("click", function () {
-        //sdkStartContinousRecognitionBtn = true;
-        //phraseDiv.innerHTML = "";
         var lastRecognized = "";
-        // if we got an authorization token, use the token. Otherwise use the provided subscription key
-        //var audioConfig = audioFileValid ? SpeechSDK.AudioConfig.fromWavFileInput(audioFile) : SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
         var audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(audioFile.files[0]);
         var speechConfig;
         if (authorizationToken) {
@@ -173,7 +167,6 @@
                 reco.sessionStopped = function (s, e) {
                     window.console.log(e);
                     //statusDiv.innerHTML += "(sessionStopped) SessionId: " + e.sessionId + "\r\n";
-                    //sdkStartContinousRecognitionBtn.disabled = false;
                     sdkStopContinousRecognitionBtn.disabled = true;
                 };
 
