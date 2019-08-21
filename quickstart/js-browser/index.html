@@ -232,6 +232,21 @@
                 return;
               }
             });*/
+
+            function UpdateRecognizedPhrase(json, i) {
+              var curFile = document.getElementById('filePicker').files[i-1];
+              let indexStart = curFile.name.lastIndexOf("_") + 1;
+              let indexEnd = curFile.name.lastIndexOf(".");
+              let timeStart = curFile.name.substring(indexStart, indexEnd);
+              let info = JSON.parse(json);
+                  if (info["NBest"] != undefined) {
+                      var row = info['NBest'][0];
+                      row['Onset'] = info["Offset"] / 10000000 + timeStart / 1000;
+                      row['Offset'] = ((info["Duration"]) / 10000000 + row['Onset']).toFixed(2);
+                      row['Onset'] = row['Onset'].toFixed(2);
+                      curFileRows.push(row);
+                  }
+              }
         });
 
       if (!!window.SpeechSDK) {
