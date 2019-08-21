@@ -32,7 +32,7 @@
       <div class="option_label">
         <p>API KEY</p>
       </div>
-      <input id="subscriptionKey" type="text" size="40" value="56a3787444834f1c80a0b45051a2584a">
+      <input id="subscriptionKey" type="text" size="40" value="Your Microsoft Speech API Key">
       <div id="api_explanation">?</div>
     </div>
     <div class="flex option_row">
@@ -158,6 +158,24 @@
 
   <!-- Speech SDK USAGE -->
   <script>
+    window.onbeforeunload = function() {
+    // Saves user's key to "localStorage" (user's browser)
+    // so the user doesn't need to re-enter it every time
+      let userKey = document.getElementById('subscriptionKey').value;
+      localStorage.setItem('subscriptionKey', userKey);
+    }
+    // When page loads, put key in the box if it has been saved already
+    // Check for browser compatibility with localStorage access
+    try {
+          let userKey = localStorage.getItem('subscriptionKey');
+        }
+        catch(e){
+            alert("Your web browser is currently not compatible with CLOx, and it may not function as intended. Chrome, Firefox, and Opera are currently supported. If you believe you have received this message in error, please contact the CLOx team.")
+        }
+        finally {
+                let userKey = localStorage.getItem('subscriptionKey');
+                document.getElementById('subscriptionKey').value = userKey;
+        }
     // status fields and start button in UI
     var phraseDiv;
     var sdkStopContinousRecognitionBtn;
@@ -178,6 +196,7 @@
       audioFile = document.getElementById("filePicker");
       subscriptionKey = document.getElementById("subscriptionKey");
       serviceRegion = document.getElementById("serviceRegion");
+      languageOptions = document.getElementById("languageOptions");
       phraseDiv = document.getElementById("phraseDiv");
       preprocess_explanation = document.getElementById("preprocess_explanation");
       api_explanation = document.getElementById("api_explanation");
@@ -279,8 +298,11 @@
         } else {
           speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey.value, serviceRegion.value);
         }
-
-        speechConfig.speechRecognitionLanguage = "en-US";
+        speechConfig.speechRecognitionLanguage = languageOptions.value;
+        if (curFile.size > 19200044) {
+            alert("Your file exceeds the maximum allowed file size. It must be 19.2MB or less");
+            return;
+        };
         recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
         reco = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
         curFileRows.push(columnNames);
