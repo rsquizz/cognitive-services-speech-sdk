@@ -27,7 +27,7 @@
       <tr>
         <td></td>
         <tr><td></td><td><button id="speechsdkStopContinuousRecognition" disabled="disabled">STOP stopContinuousRecognitionAsync()</button></td></tr>
-        <tr><td></td><td><button id="startRecognizeOnceAsyncButton">Start Recognize Once Async</button></td></tr>
+        <tr><td></td><td><button id="startContinuousRecognition">Start Continuous Recognition</button></td></tr>
         <tr><td></td><td><input type="file" id="filePicker" accept=".wav" multiple ></td></tr>
       </tr>
       <tr>
@@ -75,8 +75,7 @@
     // status fields and start button in UI
     var phraseDiv;
     var sdkStopContinousRecognitionBtn;
-    //I believe "RecognizeOnceAsync" is actually functioning as a continuous recognition process
-    var startRecognizeOnceAsyncButton;
+    var startContinuousRecognition;
     // subscription key and region for speech services.
     var subscriptionKey, serviceRegion;
     var authorizationToken;
@@ -88,7 +87,7 @@
     var audioFileValid;
 
     document.addEventListener("DOMContentLoaded", function () {
-      startRecognizeOnceAsyncButton = document.getElementById("startRecognizeOnceAsyncButton");
+      startContinuousRecognition = document.getElementById("startContinuousRecognition");
       sdkStopContinousRecognitionBtn = document.getElementById("speechsdkStopContinuousRecognition");
       audioFile = document.getElementById("filePicker");
       console.log(audioFile.files);
@@ -96,8 +95,8 @@
       serviceRegion = document.getElementById("serviceRegion");
       phraseDiv = document.getElementById("phraseDiv");
 
-      startRecognizeOnceAsyncButton.addEventListener("click", function () {
-        startRecognizeOnceAsyncButton.disabled = true;
+      startContinuousRecognition.addEventListener("click", function () {
+        startContinuousRecognition.disabled = true;
         phraseDiv.innerHTML = "";
         var lastRecognized = "";
         var audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(audioFile.files[0]);
