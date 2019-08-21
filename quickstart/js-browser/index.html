@@ -26,7 +26,6 @@
       </tr>
       <tr>
         <td></td>
-        <td><button id="speechsdkStartContinuousRecognition">startContinuousRecognitionAsync()</button></td>
         <tr><td></td><td><button id="speechsdkStopContinuousRecognition" disabled="disabled">STOP stopContinuousRecognitionAsync()</button></td></tr>
         <tr><td></td><td><button id="startRecognizeOnceAsyncButton">Start Recognize Once Async</button></td></tr>
         <tr><td></td><td><input type="file" id="filePicker" accept=".wav" multiple ></td></tr>
@@ -75,7 +74,7 @@
   <script>
     // status fields and start button in UI
     var phraseDiv;
-    var sdkStartContinousRecognitionBtn, sdkStopContinousRecognitionBtn;
+    var sdkStopContinousRecognitionBtn;
     var startRecognizeOnceAsyncButton;
     // subscription key and region for speech services.
     var subscriptionKey, serviceRegion;
@@ -89,7 +88,6 @@
 
     document.addEventListener("DOMContentLoaded", function () {
       startRecognizeOnceAsyncButton = document.getElementById("startRecognizeOnceAsyncButton");
-      sdkStartContinousRecognitionBtn = document.getElementById("speechsdkStartContinuousRecognition");
       sdkStopContinousRecognitionBtn = document.getElementById("speechsdkStopContinuousRecognition");
       audioFile = document.getElementById("filePicker");
       console.log(audioFile.files);
@@ -175,7 +173,7 @@
                 reco.sessionStopped = function (s, e) {
                     window.console.log(e);
                     //statusDiv.innerHTML += "(sessionStopped) SessionId: " + e.sessionId + "\r\n";
-                    sdkStartContinousRecognitionBtn.disabled = false;
+                    //sdkStartContinousRecognitionBtn.disabled = false;
                     sdkStopContinousRecognitionBtn.disabled = true;
                 };
 
@@ -194,7 +192,6 @@
                 // Starts recognition
                 reco.startContinuousRecognitionAsync();
 
-                sdkStartContinousRecognitionBtn.disabled = true;
                 sdkStopContinousRecognitionBtn.disabled = false;
             });
 
@@ -210,7 +207,6 @@
                         reco = undefined;
                     });
 
-                sdkStartContinousRecognitionBtn.disabled = false;
                 sdkStopContinousRecognitionBtn.disabled = true;
             });
 
@@ -248,7 +244,6 @@
 
       if (!!window.SpeechSDK) {
         SpeechSDK = window.SpeechSDK;
-        speechsdkStartContinuousRecognition.disabled = false;
 
         document.getElementById('content').style.display = 'block';
         document.getElementById('warning').style.display = 'none';
