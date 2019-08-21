@@ -159,7 +159,7 @@
             finalText = noPunctuation.replace(/\s{2,}/g," ");
             onset = (e.result.offset / 10000000) + (timeStart / 1000);
             offset = (e.result.duration / 10000000) + onset;
-            rowArray = [finalText, onset, offset]
+            rowArray = [finalText, onset.toFixed(2), offset.toFixed(2)]
             row = rowArray.join();
             curFileRows.push("\r\n" + row);
             console.log(rowArray, row, curFileRows);
