@@ -99,9 +99,17 @@
       startContinuousRecognition.addEventListener("click", function () {
         startContinuousRecognition.disabled = true;
         phraseDiv.innerHTML = "";
-        var lastRecognized = "";
-        var audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(audioFile.files[0]);
-        var speechConfig;
+        let lastRecognized = "";
+        let curFile = document.getElementById('filePicker').files[0];
+        let indexStart = curFile.name.lastIndexOf("_") + 1;
+        let indexEnd = curFile.name.lastIndexOf(".");
+        let timeStart = curFile.name.substring(indexStart, indexEnd);
+        let row = [];
+        let text = "";
+        let onset = 0;
+        let offset = 0;
+        let audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(audioFile.files[0]);
+        let speechConfig;
         if (authorizationToken) {
           speechConfig = SpeechSDK.SpeechConfig.fromAuthorizationToken(authorizationToken, serviceRegion.value);
         } else {
@@ -138,6 +146,14 @@
             //output manipulation goes here
             lastRecognized += e.result.text + "\r\n";
             phraseDiv.innerHTML = lastRecognized;
+            text = e.result.text;
+            onset = (e.result.offset / 10000000) + (timeStart / 1000);
+            offset = (e.result.duration / 10000000) + onset;
+            row[0] = text;
+            row[1] = onset;
+            row[2] = offset;
+            curFileRows.push(row);
+            console.log(onset.toFixed(2), offset.toFixed(2), row, curFileRows);
         };
 
         // The event signals that the service has stopped processing speech.
