@@ -116,7 +116,7 @@
         </div>
         <button id="startContinuousRecognition">Start</button>  
         <button id="speechsdkStopContinuousRecognition" disabled="disabled">Stop</button>
-        <input type="file" id="filePicker" accept=".wav" style="display: none" multiple >
+        <input type="file" id="filePicker" accept=".wav" style="display: none">
       </div>
       <div class="flex option_row margin_mobile">
         <div class="status">Results</div>
@@ -129,17 +129,17 @@
       <div id="api_modal" class="modal">
           <div class="modal-content">
               <span id="close_api_modal" class="close">&times;</span>
-              <p>A Speech Service API key from Microsoft Cognitive Services is needed to use this service. See <a href="https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/get-started#create-a-speech-resource-in-azure">Microsoft's Website</a> for details.
-                  Note: Bing Speech API keys no longer work for this service. You may continue to use <a href=https://clox.ling.washington.edu>Legacy CLOx </a> until 10/15/2019.</p>
+              <p>An API key from Microsoft Cognitive Services is needed to use this service. See <a href="CLOx_Guide.pdf">Guide</a> for details.
+                  Note: Bing Speech API keys no longer work for this service. You may continue to use legacy CLOx (link forthcoming) until 10/15/2019.
+              </p>
           </div>
       </div>
       <div id="preprocess_modal" class="modal">
           <div class="modal-content">
               <span id="close_modal" class="close">&times;</span>
-              <p>Audio files must be in .wav format, mono, sampled at 16000 Hz, and under 19.2 MB in size, which is 10 minutes of speech under those specifications.
-                Audio filenames must end in “_startTime.wav,” where “startTime” is the beginning of the file in milliseconds. Use "_0.wav" if you do not need to adjust your timestamp.
-                If your file(s) need formatting, you may use our <a href="../../auto_extraction.praat">Praat script</a>, or (2) pre-process it manually (see <a href="CLOx_Guide.pdf">Guide</a>). 
-                If audio is not preprocessed, CLOx may crash without notification or produce undesirable output.</p>
+              <p>Audio files must be in .wav format, mono, and sampled at 16000 Hz. Audio filenames must end in “_startTime.wav,” where “startTime” is the beginning of the file in milliseconds. Use "_0.wav" if you do not need to adjust your timestamp.
+                  If your file(s) need formatting, you may use our <a href="../../auto_extraction.praat">Praat script</a>, or (2) pre-process it manually (see <a href="CLOx_Guide.pdf">Guide</a>). 
+                  If audio is not preprocessed, CLOx may crash without notification or produce undesirable output.</p>
           </div>
       </div>
         <div id="footer">
@@ -184,21 +184,11 @@
     var subscriptionKey, serviceRegion;
     var authorizationToken;
     var inputSource;
-    var audioConfig;
-    var speechConfig;
     var SpeechSDK;
     var recognizer;
     var audioFile; 
     var audioFileValid;
-    var files;
-    var reco;
-    var recognizer;
-    var recos =[];
     var curFileRows = [];
-    var columnNames = ['Text', 'Onset', 'Offset']
-    var allRows = [];
-    var i = 0;
-    allRows.push(columnNames);
 
     document.addEventListener("DOMContentLoaded", function () {
       startContinuousRecognition = document.getElementById("startContinuousRecognition");
@@ -289,8 +279,7 @@
         startContinuousRecognition.disabled = true;
         phraseDiv.innerHTML = "";
         let lastRecognized = "";
-        let numOfFiles = document.getElementById('filePicker').files.length;
-        let curFile = document.getElementById('filePicker').files[i];
+        let curFile = document.getElementById('filePicker').files[0];
         let indexStart = curFile.name.lastIndexOf("_") + 1;
         let indexEnd = curFile.name.lastIndexOf(".");
         let timeStart = curFile.name.substring(indexStart, indexEnd);
@@ -301,38 +290,22 @@
         let finalText = "";
         let onset = 0;
         let offset = 0;
-        let files = document.getElementById('filePicker').files;
-        console.log(files);
+        let columnNames = ['Text', 'Onset', 'Offset']
+        let audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(audioFile.files[0]);
+        let speechConfig;
         if (authorizationToken) {
           speechConfig = SpeechSDK.SpeechConfig.fromAuthorizationToken(authorizationToken, serviceRegion.value);
         } else {
           speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey.value, serviceRegion.value);
         }
         speechConfig.speechRecognitionLanguage = languageOptions.value;
-        //Validate audio files' names - catches instances where no underscore is included and/or a number does not immediately precede the .wav
-        let j = 0;
-        let nameProblem = false;
-        while (j < files.length) {
-            if (isNaN(parseInt(files[j].name.charAt(files[j].name.length - 5))) || files[j].name.includes("_") == false) {
-                nameProblem = true;
-            }
-            j++;
-        }
-        if (nameProblem == true) {
-            alert("Make sure that each filename ends with _”startTime”.wav, where “startTime” is the beginning time of the file in milliseconds. For example, if you are using 5-minute (300000 millisecond) files, the first .wav should be named soundName_0.wav, the second soundName_300000.wav, the third soundName_600000, and so on. (This is done to ensure that timestamps are represented accurately in the output .csv file.)");
-            doNext(1000, files);
-        } else if (files.length > 100) {
-            alert("The maximum number of segments that can be uploaded at once is 100. Please upload fewer segments at a time.")
-            doNext(1000, files);
-        } else {
-          if (curFile.size > 19200044) {
-              alert("Your file exceeds the maximum allowed file size. It must be 19.2MB or less");
-              return;
-          } else {
-            console.log("line 332 reporting. i = ", i)
-            doNext(i, files);
-          }
+        if (curFile.size > 19200044) {
+            alert("Your file exceeds the maximum allowed file size. It must be 19.2MB or less");
+            return;
         };
+        recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+        reco = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+        curFileRows.push(columnNames);
 
         reco.recognizing = function (s, e) {
             window.console.log(e);
@@ -355,7 +328,17 @@
                 //statusDiv.innerHTML += "(recognized)  Reason: " + SpeechSDK.ResultReason[e.result.reason] + " Text: " + e.result.text + "\r\n";
             }
             //output manipulation goes here
-            updateRecognizedPhrase(e, i)
+            lastRecognized += e.result.text + "\r\n";
+            phraseDiv.innerHTML = lastRecognized;
+            text = e.result.text;
+            noPunctuation = text.replace(/[.,\/#!$?%\^&\*;:{}=\-_`~()]/g,"");
+            finalText = noPunctuation.replace(/\s{2,}/g," ");
+            onset = (e.result.offset / 10000000) + (timeStart / 1000);
+            offset = (e.result.duration / 10000000) + onset;
+            rowArray = [finalText, onset.toFixed(2), offset.toFixed(2)]
+            row = rowArray.join();
+            curFileRows.push("\r\n" + row);
+            console.log(rowArray, row, curFileRows);
         };
 
         // The event signals that the service has stopped processing speech.
@@ -398,25 +381,14 @@
                 reco.speechEndDetected = function (s, e) {
                     window.console.log(e);
                     //statusDiv.innerHTML += "(speechEndDetected) SessionId: " + e.sessionId + "\r\n";
-                    reco.stopContinuousRecognitionAsync(
-                      function () {
-                        reco.close();
-                        reco = undefined;
-                        curFileRows = [];
-                    },
-                    function (err) {
-                        reco.close();
-                        reco = undefined;
-                    });
-                    console.log("line 412 reporting. i = ", i);
-                    doNext(i, files);
-                    //createCSV(allRows,outputDir);
-                    //curFileRows = [];
+                    createCSV();
+                    curFileRows = [];
                 };
 
                 // Starts recognition
-                //reco.startContinuousRecognitionAsync();
-                //sdkStopContinousRecognitionBtn.disabled = false;
+                reco.startContinuousRecognitionAsync();
+
+                sdkStopContinousRecognitionBtn.disabled = false;
             });
             // Stops recognition and disposes of resources.
             sdkStopContinousRecognitionBtn.addEventListener("click", function () {
@@ -424,6 +396,7 @@
                     function () {
                         reco.close();
                         reco = undefined;
+                        createCSV();
                         curFileRows = [];
                     },
                     function (err) {
@@ -435,60 +408,16 @@
             });
         });
 
-      function setup (curFile) {
-        audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(curFile);
-        recos.push(audioConfig);
-      }
-
-      function doNext(i, files) {
-        if (curFileRows.length > 0) {
-        allRows.push.apply(allRows, curFileRows);
-        curFileRows = [];
-        }
-        if (i < files.length) {
-          console.log("line 447 reporting. i = ", i)
-          curFile = document.getElementById('filePicker').files[i];
-          setup(curFile);
-          recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, recos[i]);
-          reco = new SpeechSDK.SpeechRecognizer(speechConfig, recos[i]);
-          i += 1;
-          console.log("line 453 reporting. i = ", i)
-          // Starts recognition
-          reco.startContinuousRecognitionAsync();
-          sdkStopContinousRecognitionBtn.disabled = false;
-          startContinuousRecognition.disabled = true;
-        } else {
-          audioFile.files = [];
-          var outputDir = fileName.value;
-          if (!outputDir.endsWith(".csv")) {
-            outputDir += ".csv";
-          }
-          createCsv(allRows, outputDir);
-          allrows = [];
-        }
-      };
-
-      function updateRecognizedPhrase() {
-        lastRecognized += e.result.text + "\r\n";
-        phraseDiv.innerHTML = lastRecognized;
-        text = e.result.text;
-        noPunctuation = text.replace(/[.,\/#!$?%\^&\*;:{}=\-_`~()]/g,"");
-        finalText = noPunctuation.replace(/\s{2,}/g," ");
-        onset = (e.result.offset / 10000000) + (timeStart / 1000);
-        offset = (e.result.duration / 10000000) + onset;
-        rowArray = [finalText, onset.toFixed(2), offset.toFixed(2)]
-        row = rowArray.join();
-        curFileRows.push("\r\n" + row);
-        console.log(rowArray, row, curFileRows);
-        allRows.push(curFileRows);
-      }
-        
-      function createCSV(allRows, outputDir) {
-        var csv = allRows;
+      function createCSV() {
+        var csv = curFileRows;
         // make a new file
         var blob = new Blob ([csv]);
         var a = window.document.createElement("a");
-        a.href = window.URL.createObjectURL(blob, {type: 'text/csv;charset=utf-8;'});
+        a.href = window.URL.createObjectURL(blob, {type: 'text/csv;charset=utf-8;'})
+        var outputDir = fileName.value;
+        if (!outputDir.endsWith(".csv")) {
+          outputDir += ".csv";
+        }
         a.download = outputDir;
         document.body.appendChild(a);
         a.click();
