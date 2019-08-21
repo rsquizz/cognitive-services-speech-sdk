@@ -18,17 +18,18 @@
       </tr>
       <tr>
         <td align="right"><a href="https://docs.microsoft.com/azure/cognitive-services/speech-service/get-started" target="_blank">Subscription</a>:</td>
-        <td><input id="subscriptionKey" type="text" size="40" value="subscription"></td>
+        <td><input id="subscriptionKey" type="text" size="40" value="56a3787444834f1c80a0b45051a2584a"></td>
       </tr>
       <tr>
         <td align="right">Region</td>
-        <td><input id="serviceRegion" type="text" size="40" value="YourServiceRegion"></td>
+        <td><input id="serviceRegion" type="text" size="40" value="westus"></td>
       </tr>
       <tr>
         <td></td>
         <td><button id="speechsdkStartContinuousRecognition">startContinuousRecognitionAsync()</button></td>
-        <!--<td><button id="speechsdkStopContinuousRecognition" disabled="disabled">STOP stopContinuousRecognitionAsync()</button></td>-->
-        <!--<td><button id="startRecognizeOnceAsyncButton">Start recognition</button></td>-->
+        <tr><td></td><td><button id="speechsdkStopContinuousRecognition" disabled="disabled">STOP stopContinuousRecognitionAsync()</button></td></tr>
+        <tr><td></td><td><button id="startRecognizeOnceAsyncButton">Start Recognize Once Async</button></td></tr>
+        <tr><td></td><td><input type="file" id="filePicker" accept=".wav" multiple ></td></tr>
       </tr>
       <tr>
         <td align="right" valign="top">Results</td>
@@ -75,8 +76,7 @@
     // status fields and start button in UI
     var phraseDiv;
     var sdkStartContinousRecognitionBtn, sdkStopContinousRecognitionBtn;
-    //var startRecognizeOnceAsyncButton;
-
+    var startRecognizeOnceAsyncButton;
     // subscription key and region for speech services.
     var subscriptionKey, serviceRegion;
     var authorizationToken;
@@ -84,24 +84,31 @@
     var SpeechSDK;
     var recognizer;
     var filePicker;
-    var audiofile; 
+    var audioFile; 
     var audioFileValid;
 
     document.addEventListener("DOMContentLoaded", function () {
-      //startRecognizeOnceAsyncButton = document.getElementById("startRecognizeOnceAsyncButton");
+      startRecognizeOnceAsyncButton = document.getElementById("startRecognizeOnceAsyncButton");
       sdkStartContinousRecognitionBtn = document.getElementById("speechsdkStartContinuousRecognition");
       sdkStopContinousRecognitionBtn = document.getElementById("speechsdkStopContinuousRecognition");
+      audioFile = document.getElementById("filePicker");
+      console.log(audioFile.files);
       subscriptionKey = document.getElementById("subscriptionKey");
       serviceRegion = document.getElementById("serviceRegion");
       phraseDiv = document.getElementById("phraseDiv");
 
-      //startRecognizeOnceAsyncButton.addEventListener("click", function () {
-      sdkStartContinousRecognitionBtn.addEventListener("click", function () {
-        sdkStartContinousRecognitionBtn = true;
+      startRecognizeOnceAsyncButton.addEventListener("click", function () {
+        startRecognizeOnceAsyncButton.disabled = true;
         phraseDiv.innerHTML = "";
+      //});
+      
+      //sdkStartContinousRecognitionBtn.addEventListener("click", function () {
+        //sdkStartContinousRecognitionBtn = true;
+        //phraseDiv.innerHTML = "";
         var lastRecognized = "";
         // if we got an authorization token, use the token. Otherwise use the provided subscription key
-        var audioConfig = audioFileValid ? SpeechSDK.AudioConfig.fromWavFileInput(audioFile) : SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+        //var audioConfig = audioFileValid ? SpeechSDK.AudioConfig.fromWavFileInput(audioFile) : SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+        var audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(audioFile.files[0]);
         var speechConfig;
         if (authorizationToken) {
           speechConfig = SpeechSDK.SpeechConfig.fromAuthorizationToken(authorizationToken, serviceRegion.value);
@@ -114,12 +121,12 @@
         }
 
         speechConfig.speechRecognitionLanguage = "en-US";
-        //recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+        recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
         reco = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
 
         reco.recognizing = function (s, e) {
             window.console.log(e);
-            statusDiv.innerHTML += "(recognizing) Reason: " + SpeechSDK.ResultReason[e.result.reason] + " Text: " + e.result.text + "\r\n";
+            //statusDiv.innerHTML += "(recognizing) Reason: " + SpeechSDK.ResultReason[e.result.reason] + " Text: " + e.result.text + "\r\n";
             phraseDiv.innerHTML = lastRecognized + e.result.text;
         };
 
@@ -132,9 +139,9 @@
             // Indicates that recognizable speech was not detected, and that recognition is done.
             if (e.result.reason === SpeechSDK.ResultReason.NoMatch) {
                 var noMatchDetail = SpeechSDK.NoMatchDetails.fromResult(e.result);
-                statusDiv.innerHTML += "(recognized)  Reason: " + SpeechSDK.ResultReason[e.result.reason] + " NoMatchReason: " + SpeechSDK.NoMatchReason[noMatchDetail.reason] + "\r\n";
+                //statusDiv.innerHTML += "(recognized)  Reason: " + SpeechSDK.ResultReason[e.result.reason] + " NoMatchReason: " + SpeechSDK.NoMatchReason[noMatchDetail.reason] + "\r\n";
             } else {
-                statusDiv.innerHTML += "(recognized)  Reason: " + SpeechSDK.ResultReason[e.result.reason] + " Text: " + e.result.text + "\r\n";
+                //statusDiv.innerHTML += "(recognized)  Reason: " + SpeechSDK.ResultReason[e.result.reason] + " Text: " + e.result.text + "\r\n";
             }
             //output manipulation goes here
             lastRecognized += e.result.text + "\r\n";
@@ -151,23 +158,23 @@
                 reco.canceled = function (s, e) {
                     window.console.log(e);
 
-                    statusDiv.innerHTML += "(cancel) Reason: " + SpeechSDK.CancellationReason[e.reason];
+                    //statusDiv.innerHTML += "(cancel) Reason: " + SpeechSDK.CancellationReason[e.reason];
                     if (e.reason === SpeechSDK.CancellationReason.Error) {
-                        statusDiv.innerHTML += ": " + e.errorDetails;
+                        //statusDiv.innerHTML += ": " + e.errorDetails;
                     }
-                    statusDiv.innerHTML += "\r\n";
+                    //statusDiv.innerHTML += "\r\n";
                 };
 
                 // Signals that a new session has started with the speech service
                 reco.sessionStarted = function (s, e) {
                     window.console.log(e);
-                    statusDiv.innerHTML += "(sessionStarted) SessionId: " + e.sessionId + "\r\n";
+                    //statusDiv.innerHTML += "(sessionStarted) SessionId: " + e.sessionId + "\r\n";
                 };
 
                 // Signals the end of a session with the speech service.
                 reco.sessionStopped = function (s, e) {
                     window.console.log(e);
-                    statusDiv.innerHTML += "(sessionStopped) SessionId: " + e.sessionId + "\r\n";
+                    //statusDiv.innerHTML += "(sessionStopped) SessionId: " + e.sessionId + "\r\n";
                     sdkStartContinousRecognitionBtn.disabled = false;
                     sdkStopContinousRecognitionBtn.disabled = true;
                 };
@@ -175,13 +182,13 @@
                 // Signals that the speech service has started to detect speech.
                 reco.speechStartDetected = function (s, e) {
                     window.console.log(e);
-                    statusDiv.innerHTML += "(speechStartDetected) SessionId: " + e.sessionId + "\r\n";
+                    //statusDiv.innerHTML += "(speechStartDetected) SessionId: " + e.sessionId + "\r\n";
                 };
 
                 // Signals that the speech service has detected that speech has stopped.
                 reco.speechEndDetected = function (s, e) {
                     window.console.log(e);
-                    statusDiv.innerHTML += "(speechEndDetected) SessionId: " + e.sessionId + "\r\n";
+                    //statusDiv.innerHTML += "(speechEndDetected) SessionId: " + e.sessionId + "\r\n";
                 };
 
                 // Starts recognition
@@ -226,17 +233,17 @@
             recognizer = undefined;
           });*/
 
-            filePicker.addEventListener("change", function () {
+            /*filePicker.addEventListener("change", function () {
               audioFile = filePicker.files[0];
-          });
+          });*/
 
-            inputSource.addEventListener("change", function () {
+            /*inputSource.addEventListener("change", function () {
               audioFileValid = inputSource.value === "File";
               if (inputSource.value === "File") {
                 filePicker.click();
                 return;
               }
-            });
+            });*/
         });
 
       if (!!window.SpeechSDK) {
