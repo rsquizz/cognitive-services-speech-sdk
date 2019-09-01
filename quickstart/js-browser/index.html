@@ -106,13 +106,14 @@
         <div class="option_number">5</div>
         <div class="option_label">Preprocessing</div>
         <div id="preprocessing">
-            <input id="preprocess_checkbox" type="checkbox" class="checkbox" checked /><label>&nbspAudio is preprocessed</label>
+            <input id="preprocess_checkbox" type="checkbox" class="checkbox" /><label>&nbspAudio is preprocessed</label>
         </div>
         <div id="preprocess_explanation">?</div>
       </div>
       <div class="flex option_column">
         <div class="info">
-          Click the "Start" button below to select audio and begin transcription.
+          Click the "Select Files and Start" button below to select audio and begin transcription. 
+          To select multiple files, use ctrl+click, cmd+click or shift+click in the file selection menu that appears after clicking.
         </div>
         <button id="startContinuousRecognition">Select Files and Start</button>  
         <button id="startTranscription" style="display: none;">Start transcription</button>
@@ -139,14 +140,15 @@
       <div id="preprocess_modal" class="modal">
           <div class="modal-content">
               <span id="close_modal" class="close">&times;</span>
-              <p>Audio files must be in .wav format, mono, and sampled at 16000 Hz. Audio filenames must end in “_startTime.wav,” where “startTime” is the beginning of the file in milliseconds. Use "_0.wav" if you do not need to adjust your timestamp.
-                  If your file(s) need formatting, you may use our <a href="clox_preprocessing.praat">Praat script</a>, or (2) pre-process it manually (see <a href="CLOx_Guide.pdf">Guide</a>). 
-                  If audio is not preprocessed, CLOx may crash without notification or produce undesirable output.</p>
+              <p>Audio files must be in .wav format, mono, and sampled at 16000 Hz, and under 19 MB in size, which is about 9.5 minutes of speech under those specifications. 
+                 Audio filenames must end in “_startTime.wav,” where “startTime” is the beginning of the file in milliseconds. Use "_0.wav" if you do not need to adjust your timestamp.
+                 If your file(s) need formatting, you may use our <a href="clox_preprocessing.praat">Praat script</a>, or (2) pre-process it manually (see <a href="CLOx_Guide.pdf">Guide</a>).
+                 If audio is not preprocessed, CLOx may crash without notification or produce undesirable output.</p>
           </div>
       </div>
         <div id="footer">
             Questions? Email cloxhelp at uw.edu
-            <br>Developed and maintained by the&nbsp<a href=http://depts.washington.edu/sociolab target="_blank">University of Washington Sociolinguistics Laboratory.</a>
+            <br>Developed and maintained by the&nbsp<a href=https://depts.washington.edu/sociolab target="_blank">University of Washington Sociolinguistics Laboratory.</a>
             <br>Powered by Microsoft Cognitive Services.
         &copy;2019.
     </div>
@@ -386,13 +388,15 @@
                     window.console.log(e);
                     //statusDiv.innerHTML += "(sessionStopped) SessionId: " + e.sessionId + "\r\n";
                     sdkStopContinousRecognitionBtn.disabled = true;
-                    //I put doNext() here because this is the last console log that shows up
                     allRows.push(curFileRows);
                     startTranscription.disabled = false;
+                    startContinuousRecognition.disabled = false;
                     if (i+2 < recos.length) {
                       startTranscription.click();
                     } else {
                       createCSVbtn.click();
+                      phraseDiv.innerHTML = lastRecognized +  "\n Transcription finished and downloaded to default folder for downloads. Refresh the page to start a new transcription.";
+                      phraseDiv.scrollTop = phraseDiv.scrollHeight;
                     };
                 };
 
@@ -417,10 +421,14 @@
             sdkStopContinousRecognitionBtn.addEventListener("click", function () {
                 reco.stopContinuousRecognitionAsync(
                     function () {
-                        reco.close();
-                        reco = undefined;
-                        allRows.push(curFileRows);
-                        createCSVbtn.click();
+                      reco.close();
+                      reco = undefined;
+                      allRows.push(curFileRows);                      
+                      createCSVbtn.click();
+                      phraseDiv.innerHTML = lastRecognized + "\n Transcription stopped and downloaded to default folder for downloads. Refresh the page to start a new transcription.";
+                      phraseDiv.scrollTop = phraseDiv.scrollHeight;
+                      startContinuousRecognition.disabled = false;
+
                     },
                     function (err) {
                         reco.close();
@@ -446,6 +454,7 @@
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+            startTranscription.disabled = false;
           });
 
     });
