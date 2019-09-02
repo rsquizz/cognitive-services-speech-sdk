@@ -156,7 +156,6 @@
   <!-- </uidiv> -->
 
   <!-- <speechsdkref> -->
-  <!-- Speech SDK reference sdk. -->
   <script src="microsoft.cognitiveservices.speech.sdk.bundle.js"></script>
   <!-- </speechsdkref> -->
 
@@ -320,14 +319,11 @@
 
       startTranscription.addEventListener("click", function () {
         startTranscription.disabled = true;
-        console.log("i =", i);
         curFileRows = [];
         var reco = recos[i];
         i += 1;
-        console.log("i =", i);
         reco.recognizing = function (s, e) {
             window.console.log(e);
-            //statusDiv.innerHTML += "(recognizing) Reason: " + SpeechSDK.ResultReason[e.result.reason] + " Text: " + e.result.text + "\r\n";
             phraseDiv.innerHTML = lastRecognized + e.result.text;
             phraseDiv.scrollTop = phraseDiv.scrollHeight;
         };
@@ -340,9 +336,8 @@
             // Indicates that recognizable speech was not detected, and that recognition is done.
             if (e.result.reason === SpeechSDK.ResultReason.NoMatch) {
                 var noMatchDetail = SpeechSDK.NoMatchDetails.fromResult(e.result);
-                //statusDiv.innerHTML += "(recognized)  Reason: " + SpeechSDK.ResultReason[e.result.reason] + " NoMatchReason: " + SpeechSDK.NoMatchReason[noMatchDetail.reason] + "\r\n";
             }
-            //output manipulation goes here
+            //Manipulation of output
             lastRecognized += e.result.text + "\r\n";
             phraseDiv.innerHTML = lastRecognized;
             var curFile = document.getElementById('filePicker').files[i-1];
@@ -357,7 +352,6 @@
             let rowArray = [finalText, onset.toFixed(2), offset.toFixed(2)]
             let row = rowArray.join();
             curFileRows.push("\r\n" + row);
-            console.log(rowArray, row, curFileRows);
         };
 
         // The event signals that the service has stopped processing speech.
@@ -369,24 +363,19 @@
                 //    This can be caused by the end of the specified file being reached, or ~20 seconds of silence from a microphone input.
                 reco.canceled = function (s, e) {
                     window.console.log(e);
-
-                    //statusDiv.innerHTML += "(cancel) Reason: " + SpeechSDK.CancellationReason[e.reason];
                     if (e.reason === SpeechSDK.CancellationReason.Error) {
                         //statusDiv.innerHTML += ": " + e.errorDetails;
                     }
-                    //statusDiv.innerHTML += "\r\n";
                 };
 
                 // Signals that a new session has started with the speech service
                 reco.sessionStarted = function (s, e) {
                     window.console.log(e);
-                    //statusDiv.innerHTML += "(sessionStarted) SessionId: " + e.sessionId + "\r\n";
                 };
 
                 // Signals the end of a session with the speech service.
                 reco.sessionStopped = function (s, e) {
                     window.console.log(e);
-                    //statusDiv.innerHTML += "(sessionStopped) SessionId: " + e.sessionId + "\r\n";
                     sdkStopContinousRecognitionBtn.disabled = true;
                     allRows.push(curFileRows);
                     startTranscription.disabled = false;
@@ -403,13 +392,11 @@
                 // Signals that the speech service has started to detect speech.
                 reco.speechStartDetected = function (s, e) {
                     window.console.log(e);
-                    //statusDiv.innerHTML += "(speechStartDetected) SessionId: " + e.sessionId + "\r\n";
                 };
 
                 // Signals that the speech service has detected that speech has stopped.
                 reco.speechEndDetected = function (s, e) {
                     window.console.log(e);
-                    //statusDiv.innerHTML += "(speechEndDetected) SessionId: " + e.sessionId + "\r\n";  
                 };
 
                 // Starts recognition
@@ -428,7 +415,6 @@
                       phraseDiv.innerHTML = lastRecognized + "\n Transcription stopped and downloaded to default folder for downloads. Refresh the page to start a new transcription.";
                       phraseDiv.scrollTop = phraseDiv.scrollHeight;
                       startContinuousRecognition.disabled = false;
-
                     },
                     function (err) {
                         reco.close();
