@@ -378,13 +378,11 @@
                     window.console.log(e);
                     sdkStopContinousRecognitionBtn.disabled = true;
                     allRows.push(curFileRows);
-                    startTranscription.disabled = false;
-                    startContinuousRecognition.disabled = false;
                     if (i+2 < recos.length) {
                       startTranscription.click();
                     } else {
                       createCSVbtn.click();
-                      phraseDiv.innerHTML = lastRecognized +  "\n Transcription finished and downloaded to default folder for downloads. Refresh the page to start a new transcription.";
+                      phraseDiv.innerHTML = "\r\n Transcription finished and downloaded to default downloads folder. Refresh the page to start a new transcription.";
                       phraseDiv.scrollTop = phraseDiv.scrollHeight;
                     };
                 };
@@ -412,9 +410,8 @@
                       reco = undefined;
                       allRows.push(curFileRows);                      
                       createCSVbtn.click();
-                      phraseDiv.innerHTML = lastRecognized + "\n Transcription stopped and downloaded to default folder for downloads. Refresh the page to start a new transcription.";
+                      phraseDiv.innerHTML = lastRecognized + "\r\n Transcription stopped and downloaded to default downloads folder. Refresh the page to start a new transcription.";
                       phraseDiv.scrollTop = phraseDiv.scrollHeight;
-                      startContinuousRecognition.disabled = false;
                     },
                     function (err) {
                         reco.close();
@@ -440,7 +437,6 @@
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            startTranscription.disabled = false;
           });
 
     });
