@@ -1,126 +1,331 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Microsoft Cognitive Services Speech SDK JavaScript Quickstart</title>
+  <title>UW CLOx</title>
   <meta charset="utf-8" />
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"> 
+  <link rel="stylesheet" type="text/css" href="public/reset.css" />
+  <link rel="stylesheet" type="text/css" href="public/style.css" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
-<body style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px;">
+<body>
   <!-- <uidiv> -->
   <div id="warning">
     <h1 style="font-weight:500;">Speech Recognition Speech SDK not found (microsoft.cognitiveservices.speech.sdk.bundle.js missing).</h1>
   </div>
-  
-  <div id="content" style="display:none">
-    <table width="100%">
-      <tr>
-        <td></td>
-        <td><h1 style="font-weight:500;">Microsoft Cognitive Services Speech SDK JavaScript Quickstart</h1></td>
-      </tr>
-      <tr>
-        <td align="right"><a href="https://docs.microsoft.com/azure/cognitive-services/speech-service/get-started" target="_blank">Subscription</a>:</td>
-        <td><input id="subscriptionKey" type="text" size="40" value="subscription"></td>
-      </tr>
-      <tr>
-        <td align="right">Region</td>
-        <td><input id="serviceRegion" type="text" size="40" value="YourServiceRegion"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td><button id="speechsdkStartContinuousRecognition">startContinuousRecognitionAsync()</button></td>
-        <!--<td><button id="speechsdkStopContinuousRecognition" disabled="disabled">STOP stopContinuousRecognitionAsync()</button></td>-->
-        <!--<td><button id="startRecognizeOnceAsyncButton">Start recognition</button></td>-->
-      </tr>
-      <tr>
-        <td align="right" valign="top">Results</td>
-        <td><textarea id="phraseDiv" style="display: inline-block;width:500px;height:200px"></textarea></td>
-      </tr>
-    </table>
+  <div id="header" class="flex">
+      <div class="fake"></div>
+      <img id="logo" src="public/images/clox_logo.jpg">
+      <img id="logo_mobile" src="public/images/clox_logo_mobile.jpg">       
+      <div class="navbar">
+          <a href="https://depts.washington.edu/sociolab/" target="_blank"><img id="uw_logo" src="public/images/W-Logo_White.png"></a>
+          <a id="nav_li" href="https://depts.washington.edu/sociolab/" target="_blank">UW Sociolinguistics</a>
+      </div>
+  </div> 
+  <div id="content" style="display: -webkit-box;  display: -moz-box;  display: -ms-flexbox;  display: flex; flex-direction: column; justify-content: center;">
+    <div id="subheader" class="flex">
+      <p><a href=#>Home </a>|<a href="CLOx_Guide.pdf" target="_blank"> Guide </a>|<a href="scripts.html" target="_blank"> Scripts &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
+  </div>
+  <div id="center_wrap" class="flex">                
+    <div class="flex option_row">
+      <div class="option_number">1</div>
+      <div class="option_label">
+        <p>API KEY</p>
+      </div>
+      <input id="subscriptionKey" type="text" size="40" value="Your Microsoft Speech API Key">
+      <div id="api_explanation">?</div>
+    </div>
+    <div class="flex option_row">
+        <div class="option_number">2</div>
+        <div class="option_label">Region</div>
+        <select id="serviceRegion">
+          <option value="australiaeast">australiaEast</option>
+          <option value="canadacentral">canadaCentral</option>
+          <option value="centralus">centralUS</option>
+          <option value="eastus">eastUS</option>
+          <option value="eastus2">eastUS2</option>
+          <option value="francecentral">franceCentral</option>
+          <option value="indiacentral">indiaCentral</option>
+          <option value="japaneast">japanEast</option>
+          <option value="koreacentral">koreaCentral</option>
+          <option value="northcentralus">northCentralUS</option>
+          <option value="northeurope">northEurope</option>
+          <option value="southcentralus">southCentralUS</option>
+          <option value="southeastasia">southeastAsia</option>
+          <option value="uksouth">ukSouth</option>
+          <option value="westeurope">westEurope</option>
+          <option value="westus" selected="selected">westUS</option>
+          <option value="westus2">westUS2</option>
+        </select>
+        <div class="placeholder_explanation">?</div>
+      </div>
+      <div class="flex option_row">
+          <div class="option_number">3</div>
+          <div class="option_label">Language</div>
+          <select id="languageOptions">
+            <option value="ar-EG">Arabic - EG</option>
+            <option value="ca-ES">Catalan - ES</option>
+            <option value="da-DK">Danish - DK</option>
+            <option value="de-DE">German - DE</option>
+            <option value="en-AU">English - AU</option>
+            <option value="en-CA">English - CA</option>
+            <option value="en-GB">English - GB</option>
+            <option value="en-IN">English - IN</option>
+            <option value="en-NZ">English - NZ</option>
+            <option value="en-US" selected="selected">English - US</option>
+            <option value="es-ES">Spanish - ES</option>
+            <option value="es-MX">Spanish - MX</option>
+            <option value="fi-FI">Finnish - FI</option>
+            <option value="fr-CA">French - CA</option>
+            <option value="fr-FR">French - FR</option>
+            <option value="hi-IN">Hindi - IN</option>
+            <option value="it-IT">Italian - IT</option>
+            <option value="ja-JP">Japanese - JP</option>
+            <option value="ko-KR">Korean - KR</option>
+            <option value="nb-NO">Norwegian - NO</option>
+            <option value="nl-NL">Dutch - NL</option>
+            <option value="pl-PL">Polish - PL</option>
+            <option value="pt-BR">Portuguese - BR</option>
+            <option value="pt-PT">Portuguese - PT</option>
+            <option value="ru-RU">Russian - RU</option>
+            <option value="sv-SE">Swedish - SE</option>
+            <option value="zh-CN">Chinese - CN</option>
+            <option value="zh-HK">Chinese - HK</option>
+            <option value="zh-TW">Chinese - TW</option>
+            <option value="th-TH">Thai - TH</option>
+        </select>
+        <div class="placeholder_explanation">?</div>
+      </div>
+      <div class="flex option_row">
+        <div class="option_number">4</div>
+        <div class="option_label">Output File Name</div>
+        <input id="fileName" type="text" size="40" value="example">
+        <div class="placeholder_explanation">?</div>
+      </div>
+      <div class="flex option_row">
+        <div class="option_number">5</div>
+        <div class="option_label">Preprocessing</div>
+        <div id="preprocessing">
+            <input id="preprocess_checkbox" type="checkbox" class="checkbox" /><label>&nbspAudio is preprocessed</label>
+        </div>
+        <div id="preprocess_explanation">?</div>
+      </div>
+      <div class="flex option_column">
+        <div class="info">
+          Click the "Select Files and Start" button below to select audio and begin transcription. 
+          To select multiple files, use ctrl+click, cmd+click or shift+click in the file selection menu that appears after clicking.
+        </div>
+        <button id="startContinuousRecognition">Select Files and Start</button>  
+        <button id="startTranscription" style="display: none;">Start transcription</button>
+        <button id="speechsdkStopContinuousRecognition" disabled="disabled">Stop</button>
+        <input type="file" id="filePicker" accept=".wav" style="display: none" multiple>
+        <button id="createCSVbtn" style="display: none;">Create CSV</button>  
+      </div>
+      <div class="flex option_row margin_mobile">
+        <div class="status">Results</div>
+        <div id="statusDiv">
+          <div id="phraseDiv"></div>
+        </div>
+      </div>
+      <table width="100%">
+      </table>
+      <div id="api_modal" class="modal">
+          <div class="modal-content">
+              <span id="close_api_modal" class="close">&times;</span>
+              <p>An API key from Microsoft Cognitive Services is needed to use this service. See <a href="CLOx_Guide.pdf">Guide</a> for details.
+                  Note: Bing Speech API keys no longer work for this service. You may continue to use legacy CLOx (link forthcoming) until 10/15/2019.
+              </p>
+          </div>
+      </div>
+      <div id="preprocess_modal" class="modal">
+          <div class="modal-content">
+              <span id="close_modal" class="close">&times;</span>
+              <p>Audio files must be in .wav format, mono, and sampled at 16000 Hz, and under 19 MB in size, which is about 9.5 minutes of speech under those specifications. 
+                 Audio filenames must end in “_startTime.wav,” where “startTime” is the beginning of the file in milliseconds. Use "_0.wav" if you do not need to adjust your timestamp.
+                 If your file(s) need formatting, you may use our <a href="clox_preprocessing.praat">Praat script</a>, or (2) pre-process it manually (see <a href="CLOx_Guide.pdf">Guide</a>).
+                 If audio is not preprocessed, CLOx may crash without notification or produce undesirable output.</p>
+          </div>
+      </div>
+        <div id="footer">
+            Questions? Email cloxhelp at uw.edu
+            <br>Developed and maintained by the&nbsp<a href=https://depts.washington.edu/sociolab target="_blank">University of Washington Sociolinguistics Laboratory.</a>
+            <br>Powered by Microsoft Cognitive Services.
+        &copy;2019.
+    </div>
   </div>
   <!-- </uidiv> -->
 
   <!-- <speechsdkref> -->
-  <!-- Speech SDK reference sdk. -->
   <script src="microsoft.cognitiveservices.speech.sdk.bundle.js"></script>
   <!-- </speechsdkref> -->
 
-  <!-- <authorizationfunction> -->
-  <!-- Speech SDK Authorization token -->
-  <!--<script>
-  // Note: Replace the URL with a valid endpoint to retrieve
-  //       authorization tokens for your subscription.
-  var authorizationEndpoint = "token.php";
-
-  function RequestAuthorizationToken() {
-    if (authorizationEndpoint) {
-      var a = new XMLHttpRequest();
-      a.open("GET", authorizationEndpoint);
-      a.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      a.send("");
-      a.onload = function() {
-          var token = JSON.parse(atob(this.responseText.split(".")[1]));
-          serviceRegion.value = token.region;
-          authorizationToken = this.responseText;
-          subscriptionKey.disabled = true;
-          subscriptionKey.value = "using authorization token (hit F5 to refresh)";
-          console.log("Got an authorization token: " + token);
-      }
-    }
-  }
-  </script>-->
-  <!-- </authorizationfunction> -->
-
-  <!-- <quickstartcode> -->
   <!-- Speech SDK USAGE -->
   <script>
+    window.onbeforeunload = function() {
+    // Saves user's key to "localStorage" (user's browser)
+    // so the user doesn't need to re-enter it every time
+      let userKey = document.getElementById('subscriptionKey').value;
+      localStorage.setItem('subscriptionKey', userKey);
+    }
+    // When page loads, put key in the box if it has been saved already
+    // Check for browser compatibility with localStorage access
+    try {
+          let userKey = localStorage.getItem('subscriptionKey');
+        }
+        catch(e){
+          alert("Your web browser is currently not compatible with CLOx, and it may not function as intended. Chrome, Firefox, and Opera are currently supported. If you believe you have received this message in error, please contact the CLOx team.")
+        }
+        finally {
+          let userKey = localStorage.getItem('subscriptionKey');
+          document.getElementById('subscriptionKey').value = userKey;
+        }
     // status fields and start button in UI
-    var phraseDiv;
-    var sdkStartContinousRecognitionBtn, sdkStopContinousRecognitionBtn;
-    //var startRecognizeOnceAsyncButton;
-
+    var sdkStopContinousRecognitionBtn;
+    var startContinuousRecognition;
+    var startTranscription;
     // subscription key and region for speech services.
     var subscriptionKey, serviceRegion;
     var authorizationToken;
     var inputSource;
     var SpeechSDK;
-    var recognizer;
+    //var recognizer;
     var filePicker;
-    var audiofile; 
-    var audioFileValid;
+    var phraseDiv;
+    var lastRecognized = "";
+    var curFileRows = [];
+    var columnNames = ['Text', 'Onset', 'Offset'];
+    var onset;
+    var offset;
+    var allRows = [];
+    allRows.push(columnNames);
+    var recos = [];
+    var i = 0;
+    var rowArray = [];
+    var row = "";
+    var text = "";
+    var noPunctuation = "";
+    var finalText = "";
 
     document.addEventListener("DOMContentLoaded", function () {
-      //startRecognizeOnceAsyncButton = document.getElementById("startRecognizeOnceAsyncButton");
-      sdkStartContinousRecognitionBtn = document.getElementById("speechsdkStartContinuousRecognition");
+      startContinuousRecognition = document.getElementById("startContinuousRecognition");
       sdkStopContinousRecognitionBtn = document.getElementById("speechsdkStopContinuousRecognition");
+      startTranscription = document.getElementById("startTranscription");
+      createCSVbtn = document.getElementById("createCSVbtn");
+      filePicker = document.getElementById("filePicker");
       subscriptionKey = document.getElementById("subscriptionKey");
       serviceRegion = document.getElementById("serviceRegion");
+      languageOptions = document.getElementById("languageOptions");
       phraseDiv = document.getElementById("phraseDiv");
+      preprocess_explanation = document.getElementById("preprocess_explanation");
+      api_explanation = document.getElementById("api_explanation");
+      preprocess_modal = document.getElementById("preprocess_modal");
+      api_modal = document.getElementById("api_modal");
+      close_modal = document.getElementById("close_modal");
+      close_api_modal = document.getElementById("close_api_modal");
 
-      //startRecognizeOnceAsyncButton.addEventListener("click", function () {
-      sdkStartContinousRecognitionBtn.addEventListener("click", function () {
-        sdkStartContinousRecognitionBtn = true;
-        phraseDiv.innerHTML = "";
-        var lastRecognized = "";
-        // if we got an authorization token, use the token. Otherwise use the provided subscription key
-        var audioConfig = audioFileValid ? SpeechSDK.AudioConfig.fromWavFileInput(audioFile) : SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
-        var speechConfig;
+      startContinuousRecognition.addEventListener("click", function () {
+        if (subscriptionKey.value == "" || subscriptionKey.value == "Your Microsoft Speech API Key") {
+            alert("Please enter your Microsoft Speech subscription key!");
+            return;
+        }
+        if (subscriptionKey.value.length != 32) {
+            alert("API keys are exactly 32 characters long. Please check your key and try again.")
+            return;
+        }
+        if (/^[a-zA-Z0-9]+$/i.test(subscriptionKey.value) == false) {
+            alert("API keys only contain alphanumeric characters. Please check your key and try again.")
+            return;
+        }
+        if (document.getElementById("preprocess_checkbox").checked == false) {
+            alert("Please confirm that your files have been preprocessed before proceeding.")
+            return;
+        }
+        filePicker.click();
+      });
+
+    subscriptionKey.addEventListener("focus", function () {
+       if (subscriptionKey.value == "Your Microsoft Speech API Key") {
+           subscriptionKey.value = "";
+       }
+    });
+
+    subscriptionKey.addEventListener("focusout", function () {
+       if (subscriptionKey.value == "") {
+           subscriptionKey.value = "Your Microsoft Speech API Key";
+       }
+    });
+
+    fileName.addEventListener("focus", function () {
+       if (fileName.value == "example") {
+           fileName.value = "";
+       }
+    });
+
+    fileName.addEventListener("focusout", function () {
+       if (fileName.value == "") {
+           fileName.value = "example";
+       }
+    });
+
+    //modal listeners
+    preprocess_explanation.addEventListener("click", function() {
+        preprocess_modal.style.display = "block";
+    })
+        
+    api_explanation.addEventListener("click", function() {
+        api_modal.style.display = "block";
+    })
+
+    close_modal.onclick = function() {
+        preprocess_modal.style.display = "none";
+    }
+
+    close_api_modal.onclick = function() {
+        api_modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == preprocess_modal) {
+            preprocess_modal.style.display = "none";
+        }
+        if (event.target == api_modal) {
+            api_modal.style.display = "none";
+        }
+    }
+        
+      filePicker.addEventListener("change", function () {
+        startContinuousRecognition.disabled = true;
+        var files = document.getElementById('filePicker').files;
+        let speechConfig;
+        let audioConfig;
         if (authorizationToken) {
           speechConfig = SpeechSDK.SpeechConfig.fromAuthorizationToken(authorizationToken, serviceRegion.value);
         } else {
-          if (subscriptionKey.value === "" || subscriptionKey.value === "subscription") {
-            alert("Please enter your Microsoft Cognitive Services Speech subscription key!");
-            return;
-          }
           speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey.value, serviceRegion.value);
         }
+        speechConfig.speechRecognitionLanguage = languageOptions.value;
+        for (file in files) {
+           audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(files[file]);
+           file_reco = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+          if (file.size > 19200044) {
+            alert("Your file exceeds the maximum allowed file size. It must be 19.2MB or less");
+            return;
+          } else {
+           recos.push(file_reco);
+          };
+        }
+        startTranscription.click();
+      });
 
-        speechConfig.speechRecognitionLanguage = "en-US";
-        //recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
-        reco = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
-
+      startTranscription.addEventListener("click", function () {
+        startTranscription.disabled = true;
+        curFileRows = [];
+        var reco = recos[i];
+        i += 1;
         reco.recognizing = function (s, e) {
             window.console.log(e);
-            statusDiv.innerHTML += "(recognizing) Reason: " + SpeechSDK.ResultReason[e.result.reason] + " Text: " + e.result.text + "\r\n";
             phraseDiv.innerHTML = lastRecognized + e.result.text;
+            phraseDiv.scrollTop = phraseDiv.scrollHeight;
         };
 
         // The event recognized signals that a final recognition result is received.
@@ -128,17 +333,25 @@
         // For continuous recognition, you will get one recognized event for each phrase recognized.
         reco.recognized = function (s, e) {
             window.console.log(e);
-
             // Indicates that recognizable speech was not detected, and that recognition is done.
             if (e.result.reason === SpeechSDK.ResultReason.NoMatch) {
                 var noMatchDetail = SpeechSDK.NoMatchDetails.fromResult(e.result);
-                statusDiv.innerHTML += "(recognized)  Reason: " + SpeechSDK.ResultReason[e.result.reason] + " NoMatchReason: " + SpeechSDK.NoMatchReason[noMatchDetail.reason] + "\r\n";
-            } else {
-                statusDiv.innerHTML += "(recognized)  Reason: " + SpeechSDK.ResultReason[e.result.reason] + " Text: " + e.result.text + "\r\n";
             }
-            //output manipulation goes here
+            //Manipulation of output
             lastRecognized += e.result.text + "\r\n";
             phraseDiv.innerHTML = lastRecognized;
+            var curFile = document.getElementById('filePicker').files[i-1];
+            var indexStart = curFile.name.lastIndexOf("_") + 1;
+            var indexEnd = curFile.name.lastIndexOf(".");
+            var timeStart = curFile.name.substring(indexStart, indexEnd);
+            text = e.result.text;
+            noPunctuation = text.replace(/[.,\/#!$?%\^&\*;:{}=\-_`~()]/g,"");
+            finalText = noPunctuation.replace(/\s{2,}/g," ");
+            onset = (e.result.offset / 10000000) + (timeStart / 1000);
+            offset = (e.result.duration / 10000000) + onset;
+            let rowArray = [finalText, onset.toFixed(2), offset.toFixed(2)]
+            let row = rowArray.join();
+            curFileRows.push("\r\n" + row);
         };
 
         // The event signals that the service has stopped processing speech.
@@ -150,98 +363,90 @@
                 //    This can be caused by the end of the specified file being reached, or ~20 seconds of silence from a microphone input.
                 reco.canceled = function (s, e) {
                     window.console.log(e);
-
-                    statusDiv.innerHTML += "(cancel) Reason: " + SpeechSDK.CancellationReason[e.reason];
                     if (e.reason === SpeechSDK.CancellationReason.Error) {
-                        statusDiv.innerHTML += ": " + e.errorDetails;
+                        //statusDiv.innerHTML += ": " + e.errorDetails;
                     }
-                    statusDiv.innerHTML += "\r\n";
                 };
 
                 // Signals that a new session has started with the speech service
                 reco.sessionStarted = function (s, e) {
                     window.console.log(e);
-                    statusDiv.innerHTML += "(sessionStarted) SessionId: " + e.sessionId + "\r\n";
                 };
 
                 // Signals the end of a session with the speech service.
                 reco.sessionStopped = function (s, e) {
                     window.console.log(e);
-                    statusDiv.innerHTML += "(sessionStopped) SessionId: " + e.sessionId + "\r\n";
-                    sdkStartContinousRecognitionBtn.disabled = false;
                     sdkStopContinousRecognitionBtn.disabled = true;
+                    allRows.push(curFileRows);
+                    startTranscription.disabled = false;
+                    startContinuousRecognition.disabled = false;
+                    if (i+2 < recos.length) {
+                      startTranscription.click();
+                    } else {
+                      createCSVbtn.click();
+                      phraseDiv.innerHTML = lastRecognized +  "\n Transcription finished and downloaded to default folder for downloads. Refresh the page to start a new transcription.";
+                      phraseDiv.scrollTop = phraseDiv.scrollHeight;
+                    };
                 };
 
                 // Signals that the speech service has started to detect speech.
                 reco.speechStartDetected = function (s, e) {
                     window.console.log(e);
-                    statusDiv.innerHTML += "(speechStartDetected) SessionId: " + e.sessionId + "\r\n";
                 };
 
                 // Signals that the speech service has detected that speech has stopped.
                 reco.speechEndDetected = function (s, e) {
                     window.console.log(e);
-                    statusDiv.innerHTML += "(speechEndDetected) SessionId: " + e.sessionId + "\r\n";
                 };
 
                 // Starts recognition
                 reco.startContinuousRecognitionAsync();
 
-                sdkStartContinousRecognitionBtn.disabled = true;
                 sdkStopContinousRecognitionBtn.disabled = false;
-            });
-
+            
             // Stops recognition and disposes of resources.
             sdkStopContinousRecognitionBtn.addEventListener("click", function () {
                 reco.stopContinuousRecognitionAsync(
                     function () {
-                        reco.close();
-                        reco = undefined;
+                      reco.close();
+                      reco = undefined;
+                      allRows.push(curFileRows);                      
+                      createCSVbtn.click();
+                      phraseDiv.innerHTML = lastRecognized + "\n Transcription stopped and downloaded to default folder for downloads. Refresh the page to start a new transcription.";
+                      phraseDiv.scrollTop = phraseDiv.scrollHeight;
+                      startContinuousRecognition.disabled = false;
                     },
                     function (err) {
                         reco.close();
                         reco = undefined;
                     });
 
-                sdkStartContinousRecognitionBtn.disabled = false;
                 sdkStopContinousRecognitionBtn.disabled = true;
             });
 
-        /* This is quickstart code for recognizing an utterance only once
-        recognizer.recognizeOnceAsync(
-          function (result) {
-            startRecognizeOnceAsyncButton.disabled = false;
-            phraseDiv.innerHTML += result.text;
-            window.console.log(result);
-
-            recognizer.close();
-            recognizer = undefined;
-          },
-          function (err) {
-            startRecognizeOnceAsyncButton.disabled = false;
-            phraseDiv.innerHTML += err;
-            window.console.log(err);
-
-            recognizer.close();
-            recognizer = undefined;
-          });*/
-
-            filePicker.addEventListener("change", function () {
-              audioFile = filePicker.files[0];
           });
 
-            inputSource.addEventListener("change", function () {
-              audioFileValid = inputSource.value === "File";
-              if (inputSource.value === "File") {
-                filePicker.click();
-                return;
-              }
-            });
-        });
+          createCSVbtn.addEventListener("click", function () {
+            var csv = allRows;
+            // make a new file
+            var blob = new Blob ([csv]);
+            var a = window.document.createElement("a");
+            a.href = window.URL.createObjectURL(blob, {type: 'text/csv;charset=utf-8;'})
+            var outputDir = fileName.value;
+            if (!outputDir.endsWith(".csv")) {
+              outputDir += ".csv";
+            }
+            a.download = outputDir;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            startTranscription.disabled = false;
+          });
+
+    });
 
       if (!!window.SpeechSDK) {
         SpeechSDK = window.SpeechSDK;
-        speechsdkStartContinuousRecognition.disabled = false;
 
         document.getElementById('content').style.display = 'block';
         document.getElementById('warning').style.display = 'none';
@@ -252,6 +457,5 @@
         }
       };
   </script>
-  <!-- </quickstartcode> -->
 </body>
 </html>

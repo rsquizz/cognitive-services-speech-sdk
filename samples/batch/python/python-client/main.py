@@ -6,20 +6,28 @@ import sys
 import requests
 import time
 import swagger_client as cris_client
-
+import json
+import csv
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format="%(message)s")
 
-SUBSCRIPTION_KEY = "<your subscription key>"
+with open ("clox_config.txt") as configfile:
+    configuration = json.load(configfile)    
+    SUBSCRIPTION_KEY = configuration['key']
+    HOST_NAME = configuration['region'].replace(" ", "") + ".cris.ai"
+    LOCALE = configuration['language']
+    RECORDINGS_BLOB_URI = configuration['uri']
 
-HOST_NAME = "<your region>.cris.ai"
+#SUBSCRIPTION_KEY = "56a3787444834f1c80a0b45051a2584a"
+#HOST_NAME = "westus.cris.ai"
 PORT = 443
 
 NAME = "Simple transcription"
 DESCRIPTION = "Simple transcription description"
 
-LOCALE = "en-US"
-RECORDINGS_BLOB_URI = "<Your SAS Uri to the recording>"
+#LOCALE = "en-US"
+#RECORDINGS_BLOB_URI = "https://cloxblob.blob.core.windows.net/cloxtest/SV11CM2G-WL-RS_8000.wav?sp=r&st=2019-07-01T08:49:01Z&se=2019-07-01T16:49:01Z&spr=https&sv=2018-03-28&sig=RG8FI7EtK8q9l9%2FCiPdK1up6RgBDTctKoCOjTZlUEU8%3D&sr=b"
+
 
 # Set subscription information when doing transcription with custom models
 ADAPTED_ACOUSTIC_ID = None  # guid of a custom acoustic model
@@ -96,6 +104,9 @@ def transcribe():
                     results = requests.get(results_uri)
                     logging.info("Transcription succeeded. Results: ")
                     logging.info(results.content.decode("utf-8"))
+                    with open ('clox_results.txt', 'w') as outfile:
+                        json.dump(results.content.decode("utf-8"), outfile)
+
             elif transcription.status == "Running":
                 running += 1
             elif transcription.status == "NotStarted":
